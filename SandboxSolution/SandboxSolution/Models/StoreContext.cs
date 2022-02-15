@@ -29,6 +29,9 @@ namespace SandboxSolution.Models
         [MaxLength(200)]
         public string? Description { get; set; }
         [Required]
+        public int Quantity { get; set; }
+        public bool IsOutOfStock { get; set; }
+        [Required]
         public int PublisherId { get; set; }
         public Publisher? Publisher { get; set; }
     }
