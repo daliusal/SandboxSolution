@@ -9,7 +9,7 @@ namespace SandboxSolution.Models
     {
         //TODO: Add DbSets
         public DbSet<Game>? Games { get; set; }
-        public DbSet<Publisher>? Publisher { get; set; }
+        public DbSet<Publisher>? Publishers { get; set; }
         
         public StoreContext(DbContextOptions<StoreContext> options) : base(options)
         {
@@ -30,7 +30,10 @@ namespace SandboxSolution.Models
         public string? Description { get; set; }
         [Required]
         public int Quantity { get; set; }
+        public double Price { get; set; }
+        public DateTime CreationTime { get; set; } = DateTime.UtcNow;
         public bool IsOutOfStock { get; set; }
+        public bool IsDeleted { get; set; }
         [Required]
         public int PublisherId { get; set; }
         public Publisher? Publisher { get; set; }
@@ -42,7 +45,8 @@ namespace SandboxSolution.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         [Required]
-        public int Name { get; set; }
+        public string? Name { get; set; }
+        public bool IsDeleted { get; set; }
         public ICollection<Game>? Games { get; set; }
     }
 }

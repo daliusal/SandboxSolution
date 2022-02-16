@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SandboxSolution", "SandboxSolution\SandboxSolution.csproj", "{4565EDE0-BEA9-42AA-97F9-DC91D35044AD}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameStoreAPI", "GameStoreAPI\GameStoreAPI.csproj", "{D0A469EA-E67C-4130-9175-7A897B02F6F7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{4565EDE0-BEA9-42AA-97F9-DC91D35044AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4565EDE0-BEA9-42AA-97F9-DC91D35044AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4565EDE0-BEA9-42AA-97F9-DC91D35044AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0A469EA-E67C-4130-9175-7A897B02F6F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0A469EA-E67C-4130-9175-7A897B02F6F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0A469EA-E67C-4130-9175-7A897B02F6F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0A469EA-E67C-4130-9175-7A897B02F6F7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

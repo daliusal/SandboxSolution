@@ -1,0 +1,18 @@
+﻿.admin-container {
+    height: 500px;
+}
+    .admin-container button {
+        height: inherit;
+        border-radius: 20px;
+        border-color: lightgray;
+        width: 49%;
+        font-size: 100px;
+        text-decoration: none;
+        color: lightgray;
+        background-color: gray;
+    }
+        .admin-container button:hover {
+            background-color: lightgray;
+            border-color: gray;
+            color: gray;
+        }
