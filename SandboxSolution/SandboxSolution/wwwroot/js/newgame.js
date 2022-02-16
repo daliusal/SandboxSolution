@@ -1,13 +1,15 @@
-﻿function onClickSubmit() {
+﻿const apiBase = "https://localhost:7077/api";
+
+function onClickSubmit() {
     if (document.forms["new-game-form"].elements["game-name"].value == "") {
         alert("Game name cannot be empty");
         return;
     }
-    postData("https://localhost:7077/api/Game");
+    postData(apiBase + "/Game");
 }
 
 async function onLoadDocument() {
-    const json = await getData('https://localhost:7077/api/Publisher');
+    const json = await getData(apiBase + "/Publisher");
     console.log(json);
     loadPublishers(json);
 }
@@ -43,11 +45,8 @@ async function postData(url) {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(data)
-    }).then(function (response) {
-        return response.text().then(function (text) {
-            console.log(text);
-            alert("wait");
-        })
+    }).then(function () {
+        location.href = "/admin/games"
     });
 }
 

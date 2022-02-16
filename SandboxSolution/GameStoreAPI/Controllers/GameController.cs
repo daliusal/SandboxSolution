@@ -32,7 +32,18 @@ namespace GameStoreAPI.Controllers
             //TODO: Return list of games
             return _mapper.Map<IEnumerable<GameReadDto>>(_repository.GetGames());
         }
-
+        [HttpGet]
+        [Route("api/[controller]/edit/{id}")]
+        public GameEditDto GetGameEditById(int id)
+        {
+            return _mapper.Map<GameEditDto>(_repository.GetGameById(id));
+        }
+        [HttpGet]
+        [Route("api/[controller]/{id}")]
+        public GameReadDto GetGameById(int id)
+        {
+            return _mapper.Map<GameReadDto>(_repository.GetGameById(id));
+        }
         [HttpPost]
         [Route("api/[controller]")]
         public void CreateGame([FromBody]GameCreateDto game)
