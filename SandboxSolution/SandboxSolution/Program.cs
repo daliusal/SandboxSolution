@@ -1,17 +1,17 @@
 using Microsoft.EntityFrameworkCore;
 using SandboxSolution.Models;
 using Microsoft.Extensions.Configuration;
+using Swashbuckle.AspNetCore;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-
 builder.Services.AddDbContext<StoreContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -23,6 +23,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.UseStaticFiles();
 
 app.UseRouting();

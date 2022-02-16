@@ -9,7 +9,7 @@ namespace SandboxSolution.Models
     {
         //TODO: Add DbSets
         public DbSet<Game>? Games { get; set; }
-        public DbSet<Publisher>? Publisher { get; set; }
+        public DbSet<Publisher>? Publishers { get; set; }
         
         public StoreContext(DbContextOptions<StoreContext> options) : base(options)
         {

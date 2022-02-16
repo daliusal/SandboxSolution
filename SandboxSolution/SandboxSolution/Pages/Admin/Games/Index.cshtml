@@ -3,14 +3,16 @@
 @{
 }
 <script src="~/js/games.js"></script>
+<button class="btn btn-success" onclick="onClickAddNew()">Add new game</button>
 <table class="table">
 	<thead>
 		<tr>
-			<th>Game name</th>
-			<th>Description</th>
-			<th>Quantity</th>
-			<th>Price</th>
-			<th>IsDeleted</th>
+			<th class="col-2">Game name</th>
+			<th class="col-5">Description</th>
+			<th class="col-1">Quantity</th>
+			<th class="col-1">Price</th>
+			<th class="col-1">IsDeleted</th>
+			<th class="col-2">Action</th>
 		</tr>	
 	</thead>
 	<tbody id="tbody">
