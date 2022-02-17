@@ -1,8 +1,20 @@
 ﻿const apiBase = "https://localhost:7077/api";
+const oDataLogialOperators = {
+    'Equal': 'eq',
+    'Not equal': 'ne',
+    'Greater than': 'gt',
+    'Greater than or equal': 'ge',
+    'Less than': 'lt',
+    'Less than or equal': 'le'
+}
+const gameColumns = [
+    'Name', 'Description', 'Quantity', 'Price', 'IsDeleted'
+];
+var filtersCount = 0;
 
 async function onLoadDocument() {
     console.log("Making API call...");
-    const json = await getData(apiBase + "/Game/getall");
+    const json = await getData(apiBase + "/Game/getall?$orderby=Name");
     loadDataIntoTable(json);
 }
 
@@ -10,7 +22,6 @@ function loadDataIntoTable(data) {
     let tbody = document.getElementById("tbody");
     for (let game of data) {
         let tr = document.createElement("tr");
-        console.log(game.id);
         tr.id = game.id;
         let td;
         td = "<td>" + game.name + "</td><td>" + game.description + "</td><td>" +
@@ -64,5 +75,16 @@ function onClickDelete(button) {
     }
 
 }
+function onClickAddFilter() {
+    //TODO: Get filters element
+    //TODO: Build filter object
+    addFilter(oDataLogialOperators, gameColumns);
+}
 
+async function onClickFilter() {
+    const query = buildQuery();
+    document.getElementById("tbody").innerHTML = "";
+    const json = await getData(apiBase + "/Game/getall?" + query);
+    loadDataIntoTable(json);
+}
 document.onload = onLoadDocument();

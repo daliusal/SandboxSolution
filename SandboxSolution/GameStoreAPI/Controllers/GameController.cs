@@ -4,6 +4,8 @@ using System.Net;
 using Microsoft.AspNetCore.Cors;
 using AutoMapper;
 using GameStoreAPI.Dtos;
+using Microsoft.AspNetCore.OData.Query;
+using System.Linq;
 
 namespace GameStoreAPI.Controllers
 {
@@ -19,6 +21,7 @@ namespace GameStoreAPI.Controllers
         }
         //TODO: Add CRUD operation APIs
         [HttpGet]
+        [EnableQuery]
         [Route("api/[controller]/getall")]
         public IEnumerable<GameReadDto> GetAllGames()
         {
@@ -26,6 +29,7 @@ namespace GameStoreAPI.Controllers
             return _mapper.Map<IEnumerable<GameReadDto>>(_repository.GetAllGames());
         }
         [HttpGet]
+        [EnableQuery]
         [Route("api/[controller]")]
         public IEnumerable<GameReadDto> GetGames()
         {
