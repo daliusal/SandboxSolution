@@ -1,13 +1,28 @@
 using Microsoft.EntityFrameworkCore;
 using GameStoreAPI.Models;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.OData;
+using Microsoft.OData.ModelBuilder;
+using Microsoft.OData.Edm;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+static IEdmModel GetEdmModel()
+{
+    ODataConventionModelBuilder builder = new();
+    builder.EntitySet<Game>("Game");
+    return builder.GetEdmModel();
+}
+
+builder.Services.AddControllers().AddOData(options => {
+    options.AddRouteComponents("odata", GetEdmModel()).Select().Filter().OrderBy().SetMaxTop(null).Count();
+}).AddNewtonsoftJson();
+
+/*builder.Services.AddControllers().AddOData(options => {
+    options.Select().Filter().OrderBy().SetMaxTop(null).Count();
+}).AddNewtonsoftJson();*/
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -33,7 +48,6 @@ app.UseCors(policy =>
     policy.WithMethods("*");
     policy.WithHeaders("*");
 });
-
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

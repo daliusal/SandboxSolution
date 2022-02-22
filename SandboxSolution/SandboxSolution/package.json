@@ -1,0 +1,6 @@
+{
+    "dependencies": {
+        "odata-query": "^6.7.1",
+        "odata-query-builder": "^0.0.7"
+    }
+}
