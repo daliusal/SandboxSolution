@@ -1,4 +1,4 @@
-﻿const apiBase = "https://localhost:7077/api";
+﻿const apiBase = "https://localhost:7077/";
 const oDataLogialOperators = {
     'Equal': 'eq',
     'Not equal': 'ne',
@@ -10,12 +10,15 @@ const oDataLogialOperators = {
 const gameColumns = [
     'Name', 'Description', 'Quantity', 'Price', 'IsDeleted'
 ];
-var filtersCount = 0;
+
+var pageQuery = "";
+var query = "";
 
 async function onLoadDocument() {
-    console.log("Making API call...");
-    const json = await getData(apiBase + "/Game/getall?$orderby=Name");
-    loadDataIntoTable(json);
+    let maxPages = await getData(apiBase + "odata/Game/$count?" + query);
+    setCurrentPage(1);
+    setMaxPages(maxPages);
+    onClickPageSelection(document.getElementById("page-1"));
 }
 
 function loadDataIntoTable(data) {
@@ -24,8 +27,8 @@ function loadDataIntoTable(data) {
         let tr = document.createElement("tr");
         tr.id = game.id;
         let td;
-        td = "<td>" + game.name + "</td><td>" + game.description + "</td><td>" +
-            game.quantity + "</td><td>€" + game.price + "</td><td>" + game.isDeleted + "</td><td>" +
+        td = "<td>" + game.Name + "</td><td>" + game.Description + "</td><td>" +
+            game.Quantity + "</td><td>€" + game.Price + "</td><td>" + game.IsDeleted + "</td><td>" +
             '<button type="button" class="btn btn-primary" onclick="onClickEdit(this)">Edit</button> ' +
             '<button type="button" class="btn btn-danger" onclick="onClickDelete(this)">Delete</button></td>';
         tr.innerHTML = td;
@@ -71,7 +74,7 @@ function onClickAddNew() {
 function onClickDelete(button) {
     if (confirm("Are you sure you want to delete '" +
         button.parentElement.parentElement.firstChild.innerHTML + "'?")) {
-        deleteData(apiBase + "/Game/" + button.parentElement.parentElement.id);
+        deleteData(apiBase + "api/Game/" + button.parentElement.parentElement.id);
     }
 
 }
@@ -81,10 +84,34 @@ function onClickAddFilter() {
     addFilter(oDataLogialOperators, gameColumns);
 }
 
-async function onClickFilter() {
-    const query = buildQuery();
-    document.getElementById("tbody").innerHTML = "";
-    const json = await getData(apiBase + "/Game/getall?" + query);
-    loadDataIntoTable(json);
+function onClickAddOrderBy() {
+    addOrderBy(gameColumns);
 }
+
+async function onClickPageSelection(page) {
+    pageQuery = getPageQuery(page);
+    await filterData();
+}
+
+async function onClickFilter() {
+    await filterData();
+}
+
+async function filterData() {
+    var query = buildQuery();
+    if (document.getElementById("tbody") != null)
+        document.getElementById("tbody").innerHTML = "";
+    if (query == "") {
+        query = pageQuery;
+    }
+    else {
+        query += "&" + pageQuery;
+    }
+    setCurrentPage(1);
+    setMaxPages(await getData(apiBase + "odata/Game/$count?" + query));
+    onClickPage(document.getElementById("page-1"));
+    const json = await getData(apiBase + "odata/Game?" + query)    
+    loadDataIntoTable(json.value);
+}
+
 document.onload = onLoadDocument();

@@ -35,16 +35,20 @@ async function getData(url) {
 }
 
 async function postData(url) {
+    console.log(game.id);
     let data = {
+        id: game.id,
         name: document.forms["edit-game-form"].elements["game-name"].value,
         description: document.forms["edit-game-form"].elements["game-description"].value,
         publisherId: document.forms["edit-game-form"].elements["publisher"].value,
+        isOutOfStock: game.isOutOfStock,
         quantity: document.forms["edit-game-form"].elements["quantity"].value,
-        price: document.forms["edit-game-form"].elements["price"].value
+        price: document.forms["edit-game-form"].elements["price"].value,
+        isDeleted: document.forms["edit-game-form"].elements["deleted"].checked
     };
 
     const response = await fetch(url, {
-        method: 'POST',
+        method: 'PATCH',
         headers: {
             'Content-Type': 'application/json'
         },

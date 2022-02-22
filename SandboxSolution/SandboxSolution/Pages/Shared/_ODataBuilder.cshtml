@@ -1,15 +1,32 @@
-﻿ODataBuilder<br />
+﻿<style>
+	.filter-button{
+		padding: 0;
+		height: 30px;
+		width: 30px;
+		border-radius: 15px;
+		border-color: gray;
+		border-width: 2px;
+		font-size: 14px;
+		background-color: lightgray;
+		color: gray;
+	}
+		.filter-button:hover{
+			border-color: lightgray;
+			background-color: gray;
+			color: lightgray;
+		}
+</style>
 <div class="container">
 	<div class="row">
 		Filter:
 		<div id="filters">
-			<button class="btn btn-primary" onclick="onClickAddFilter()">+</button>
+			<button class="btn filter-button" onclick="onClickAddFilter()">+</button>
 		</div>
 	</div>
 	<div class="row">
 		OrderBy:
 		<div id="orderby">
-			<button class="btn btn-primary" onclick="onClickAddOrderBy()">+</button>
+			<button class="btn filter-button" onclick="onClickAddOrderBy()">+</button>
 		</div>
 	</div>
 </div>

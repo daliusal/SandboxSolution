@@ -1,4 +1,5 @@
 ﻿using GameStoreAPI.Dtos;
+using Microsoft.AspNet.OData.Query;
 using System.Net;
 
 namespace GameStoreAPI.Models
@@ -66,22 +67,24 @@ namespace GameStoreAPI.Models
             SaveChanges();
         }
 
-        public IEnumerable<Game> GetAllGames()
+        public IQueryable<Game> GetAllGames()
         {
-            return _context.Games.OrderByDescending(game => game.CreationTime)
-                                 .ToList();
+            //var filter = new FilterQueryOption() ODataQuerySettings querySettings
+            return _context.Games;
         }
 
         public Game GetGameById(int id)
         {
-            return _context.Games.FirstOrDefault(game => game.Id == id);
+            if(_context.Games.Any(g => g.Id == id))
+                return _context.Games.FirstOrDefault(game => game.Id == id);
+
+            return null;
         }
 
-        public IEnumerable<Game> GetGames()
+        public IQueryable<Game> GetGames()
         {
             return _context.Games.Where(game => game.IsOutOfStock == false && game.IsDeleted == false)
-                                 .OrderByDescending(game => game.CreationTime)
-                                 .ToList();
+                                 .OrderByDescending(game => game.CreationTime);
         }
 
         public bool SaveChanges()
@@ -89,14 +92,14 @@ namespace GameStoreAPI.Models
             return _context.SaveChanges() >= 0;
         }
 
-        public void UpdateGame(int id, Game game)
+        public void UpdateGame(Game game)
         {
-            if (!_context.Games.Any(x => x.Id == id))
+            if (!_context.Games.Any(x => x.Id == game.Id))
             {
                 return;
             }
 
-            var _game = _context.Games.FirstOrDefault(game => game.Id == id);
+            var _game = _context.Games.FirstOrDefault(g => g.Id == game.Id);
 
             _game.Name = string.IsNullOrEmpty(game.Name) ? _game.Name : game.Name;
             _game.Description = string.IsNullOrEmpty(game.Description) ? _game.Description :

@@ -2,12 +2,14 @@
 @model SandboxSolution.Pages.Admin.Games.IndexModel
 @{
 }
-<script src="~/js/odataQueryBuilder.js"></script>
-<script src="~/js/games.js"></script>
 
 <partial name="../Shared/_ODataBuilder" />
-<button class="btn btn-success" onclick="onClickAddNew()">Add new game</button><br />
+<br />
 <button class="btn btn-primary" onclick="onClickFilter()">Filter</button>
+<br />
+<br />
+<button class="btn btn-success" onclick="onClickAddNew()">Add new game</button>
+
 <table class="table">
 	<thead>
 		<tr>
@@ -23,3 +25,17 @@
 
 	</tbody>
 </table>
+
+<nav aria-label="Search results pages">
+  <ul class="pagination">
+    <li class="page-item"><button class="page-link" id="previous" disabled onclick="onClickPrevious()">Previous</button></li>
+    <li class="page-item"><button class="page-link" id="page-1" style="display:block" onclick="onClickPageSelection(this)">1</button></li>
+    <li class="page-item"><button class="page-link" id="page-2" style="display:block" onclick="onClickPageSelection(this)">2</button></li>
+    <li class="page-item"><button class="page-link" id="page-3" style="display:block" onclick="onClickPageSelection(this)">3</button></li>
+    <li class="page-item"><button class="page-link" id="next" disabled onclick="onClickNext()">Next</button></li>
+  </ul>
+</nav>
+
+
+<script src="~/js/odataQueryBuilder.js"></script>
+<script src="~/js/games.js"></script>

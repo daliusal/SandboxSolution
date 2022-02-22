@@ -9,11 +9,9 @@ namespace GameStoreAPI.Profiles
         public GamesProfile()
         {
             //source -> target
-            CreateMap<Game, GameReadDto>();
-            CreateMap<GameReadDto, Game>();
+            CreateMap<Game, GameReadDto>().ReverseMap();
             CreateMap<GameCreateDto, Game>();
-            CreateMap<Game, GameEditDto>();
-            CreateMap<GameEditDto, Game>();
+            CreateMap<Game, GameEditDto>().ReverseMap();
         }
     }
 }

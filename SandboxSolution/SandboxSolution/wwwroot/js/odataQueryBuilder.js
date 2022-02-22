@@ -1,6 +1,18 @@
-﻿var filterCount = 0;
+﻿var filtersCount = 0;
+var orderbyCount = 0;
+
+var pages = [1, 2, 3]
+var currentPage = pages[0];
+var pageSize = 3;
+var pageQuery = "";
+var maxPage = 1;
+
 
 function addFilter(operators, columns) {
+    //TODO: create filter object containing multiple selects and value
+    //      select = column, operator; value = text input
+    //TODO: append all elements into div element
+    //TODO: append div to filters container
     filtersCount++;
     let filtersContainer = document.getElementById("filters");
     let filter = document.createElement("div");
@@ -11,12 +23,6 @@ function addFilter(operators, columns) {
     for (const col of columns) {
         columnSelect.innerHTML += "<option value=" + col + ">" + col + "</option>";
     }
-
-    /*let logOperatorsSelect = document.createElement("select");
-    logOperatorsSelect.id = "filter-log-operator-" + filtersCount;
-    logOperatorsSelect.innerHTML = '<option value="and">And</option>'+
-                                   '<option value="or">Or</option>' +
-                                   '<option value="not">Not</option>'*/
 
     let operatorsSelect = document.createElement("select");
     operatorsSelect.id = "filter-operator-" + filtersCount;
@@ -29,23 +35,55 @@ function addFilter(operators, columns) {
 
     filter.appendChild(columnSelect);
     filter.innerHTML += " ";
-    /*filter.appendChild(logOperatorsSelect);
-    filter.innerHTML += " ";*/
     filter.appendChild(operatorsSelect);
     filter.innerHTML += " ";
     filter.appendChild(value);
 
-    filtersContainer.appendChild(filter);
+    filtersContainer.prepend(filter);
+}
+
+function addOrderBy(columns) {
+    //TODO: create orderby object containing multiple selects
+    //      select = column, order
+    //TODO: append all elements into div element
+    //TODO: append div to filters container
+    orderbyCount++;
+    let orderbyContainer = document.getElementById("orderby");
+    let orderby = document.createElement("div");
+    orderby.id = "orderby-" + orderbyCount;
+
+    let columnSelect = document.createElement("select");
+    columnSelect.id = "orderby-column-" + orderbyCount;
+    for (const col of columns) {
+        columnSelect.innerHTML += "<option value=" + col + ">" + col + "</option>";
+    }
+    let orderSelect = document.createElement("select");
+    orderSelect.id = "orderby-order-" + orderbyCount;
+    orderSelect.innerHTML = '<option value="desc">Desc</option><option value="asc">Asc</option>';
+
+    orderby.appendChild(columnSelect);
+    orderby.innerHTML += " ";
+    orderby.appendChild(orderSelect);
+
+    orderbyContainer.prepend(orderby);
 }
 
 function buildQuery() {
-    let filter = getFilter();
-    console.log(filter)
-    filter = filter.replace(/ and $/g, '');
-    return filter;
+    //TODO: build query from filters and orderby elements
+    //TODO: check if filters and orderby have any elements added
+    //      if so build filter/orderby query and combine them
+    let filter = "";
+    let orderby = "";
+    if(filtersCount > 0)
+        filter = getFilter();
+    if (orderbyCount > 0)
+        orderby = getOrderBy();
+
+    return orderbyCount > 0 && filtersCount > 0 ? filter + "&" + orderby : filter + orderby;
 }
 
 function getFilter() {
+    //TODO: iterate thry all filters and append them to the filter string
     let filter = "$filter=";
     for (let i = 1; i <= filtersCount; i++) {
 
@@ -59,15 +97,76 @@ function getFilter() {
             filter += column + " " + operator + " '" + value + "'";
         if (i != filtersCount)
             filter += " and ";
-
-        /*if (filter[column] == null) {
-            filter[column] = [];
-        }
-        if (filter[column][operator] == null) {
-            filter[column][operator] = [];
-            filter[column][operator].push(value);
-        }*/
     }
 
     return filter;
+}
+
+function getOrderBy() {
+    //TODO: iterate thru all orderby filters and append to orderby filter
+    let orderby = "$orderby=";
+    for (let i = 1; i <= orderbyCount; i++) {
+
+        let column = document.getElementById("orderby-column-" + i).value;
+        let order = document.getElementById("orderby-order-" + i).value;
+
+        orderby += column + " " + order;
+        if (i != orderbyCount)
+            orderby += ",";
+    }
+
+    return orderby;
+}
+
+function onClickPage(page) {
+    document.getElementById("next").disabled = false;
+    for (let i = 1; i <= pages.length; i++) {
+        if (i > maxPage) {
+            console.log(maxPage);
+            document.getElementById("page-" + i).style.display = "none";
+        }
+        else {
+            document.getElementById("page-" + i).style.display = "block";
+        }
+    }
+
+    if (page == null)
+        pageQuery = "$skip=" + (currentPage * pageSize - pageSize) + "&$top=" + pageSize;
+    else {
+        currentPage = parseInt(page.innerHTML);
+        if (currentPage == 1) {
+            pages[0] = 1;
+            pages[1] = 2;
+            pages[2] = 3;
+        }
+        else if (currentPage >= maxPage) {
+            pages[0] = maxPage - 2;
+            pages[1] = maxPage - 1;
+            pages[2] = maxPage;
+        }
+        else {
+            pages[0] = currentPage - 1;
+            pages[1] = currentPage;
+            pages[2] = currentPage + 1;
+        }        
+
+        for (let i = 0; i < pages.length; i++) {
+            document.getElementById("page-" + (i + 1)).innerHTML = pages[i];
+        }
+    }
+
+    pageQuery = "$skip=" + (currentPage * pageSize - pageSize) + "&$top=" + pageSize;
+}
+
+function getPageQuery(page) {
+    onClickPage(page);
+    return pageQuery;
+}
+
+function setMaxPages(numberOfItems) {
+    maxPage = Math.ceil(numberOfItems / pageSize);
+}
+
+function setCurrentPage(page) {
+    currnet = page;
 }

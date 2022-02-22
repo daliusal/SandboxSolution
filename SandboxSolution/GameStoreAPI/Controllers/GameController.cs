@@ -1,15 +1,18 @@
 ﻿using GameStoreAPI.Models;
-using Microsoft.AspNetCore.Mvc;
-using System.Net;
-using Microsoft.AspNetCore.Cors;
 using AutoMapper;
-using GameStoreAPI.Dtos;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Deltas;
+using Microsoft.AspNetCore.OData.Formatter;
 using Microsoft.AspNetCore.OData.Query;
-using System.Linq;
+using Microsoft.AspNetCore.OData.Results;
+using Microsoft.AspNetCore.OData.Routing.Controllers;
+using Microsoft.EntityFrameworkCore;
+using GameStoreAPI.Dtos;
+using Microsoft.AspNet.OData.Routing;
 
 namespace GameStoreAPI.Controllers
 {
-    public class GameController : Controller
+    public class GameController : ODataController
     {
         private readonly IGameRepo _repository;
         private readonly IMapper _mapper;
@@ -19,38 +22,40 @@ namespace GameStoreAPI.Controllers
             _repository = repository;
             _mapper = mapper;
         }
+
         //TODO: Add CRUD operation APIs
-        [HttpGet]
         [EnableQuery]
-        [Route("api/[controller]/getall")]
-        public IEnumerable<GameReadDto> GetAllGames()
+        public async Task<IEnumerable<Game>> Get()
         {
             //TODO: Return list of games
-            return _mapper.Map<IEnumerable<GameReadDto>>(_repository.GetAllGames());
+            //var games = _repository.GetAllGames();
+            //var result = new PagingResult<GameReadDto>()
+            //{
+            //    Count = games.Count(),
+            //    Result = _mapper.Map<IEnumerable<GameReadDto>>(games)
+            //};
+            return _repository.GetAllGames();
         }
-        [HttpGet]
+
+        /*[HttpGet]
         [EnableQuery]
-        [Route("api/[controller]")]
+        //[Route("api/[controller]")]
         public IEnumerable<GameReadDto> GetGames()
         {
             //TODO: Return list of games
             return _mapper.Map<IEnumerable<GameReadDto>>(_repository.GetGames());
-        }
+        }*/
+
         [HttpGet]
-        [Route("api/[controller]/edit/{id}")]
-        public GameEditDto GetGameEditById(int id)
+        [Route("api/[controller]/{id}")]
+        public async Task<GameEditDto> GetGameById(int id)
         {
             return _mapper.Map<GameEditDto>(_repository.GetGameById(id));
         }
-        [HttpGet]
-        [Route("api/[controller]/{id}")]
-        public GameReadDto GetGameById(int id)
-        {
-            return _mapper.Map<GameReadDto>(_repository.GetGameById(id));
-        }
+
         [HttpPost]
         [Route("api/[controller]")]
-        public void CreateGame([FromBody]GameCreateDto game)
+        public async Task<IActionResult> CreateGame([FromBody]GameCreateDto game)
         {
             //TODO: Check if game already exists
             //      if so change IsDeleted flag to false
@@ -58,24 +63,32 @@ namespace GameStoreAPI.Controllers
             //TODO: If game doesn't exist create a new game
             //      and add it into DB
             _repository.CreateGame(_mapper.Map<Game>(game));
+            return Created(game);
         }
 
         [HttpDelete]
         [Route("api/[controller]/{id}")]
-        public void DeleteGame(int id)
+        public async Task<IActionResult> DeleteGame(int id)
         {
             //TODO: Check if game exists
             //      if so change change IsDeleted flag to true
-            _repository.DeleteGame(id);
+            var game = _repository.GetGameById(id);
+            if (game != null)
+            {
+                _repository.DeleteGame(id);
+                return StatusCode(StatusCodes.Status204NoContent);
+            }
+
+            return NotFound();
         }
 
         [HttpPatch]
         [Route("api/[controller]")]
-        public void UpdateGame(int id, GameReadDto game)
+        public async Task UpdateGame(int id, GameReadDto game)
         {
             //TODO: Check if game exists if so
             //      update game values
-            _repository.UpdateGame(id, _mapper.Map<Game>(game));
+            _repository.UpdateGame(_mapper.Map<Game>(game));
         }
 
         [HttpPatch]
