@@ -39,7 +39,7 @@ function addFilter(operators, columns) {
     filter.innerHTML += " ";
     filter.appendChild(value);
 
-    filtersContainer.prepend(filter);
+    filtersContainer.append(filter);
 }
 
 function addOrderBy(columns) {
@@ -65,7 +65,7 @@ function addOrderBy(columns) {
     orderby.innerHTML += " ";
     orderby.appendChild(orderSelect);
 
-    orderbyContainer.prepend(orderby);
+    orderbyContainer.append(orderby);
 }
 
 function buildQuery() {
@@ -134,7 +134,7 @@ function onClickPage(page) {
         pageQuery = "$skip=" + (currentPage * pageSize - pageSize) + "&$top=" + pageSize;
     else {
         currentPage = parseInt(page.innerHTML);
-        if (currentPage == 1) {
+        if (currentPage <= 1 || (maxPage == 2 && currentPage == 2)) {
             pages[0] = 1;
             pages[1] = 2;
             pages[2] = 3;

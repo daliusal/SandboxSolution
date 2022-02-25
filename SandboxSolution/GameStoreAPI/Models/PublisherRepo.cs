@@ -5,13 +5,12 @@ namespace GameStoreAPI.Models
     public class PublisherRepo : IPublisherRepo
     {
         private readonly GameStoreDBContext _context;
-        private readonly IMapper _mapper;
 
         public PublisherRepo(GameStoreDBContext context)
         {
             _context = context;
         }
-        public void CreatePublisher(Publisher publisher)
+        public async Task CreatePublisher(Publisher publisher)
         {
             Publisher _publisher;
             if (_context.Publishers.Any(pub => pub.Name == publisher.Name))
@@ -30,10 +29,10 @@ namespace GameStoreAPI.Models
                 _publisher = _context.Publishers.OrderBy(pub => pub.Id).FirstOrDefault();
             }
 
-            SaveChanges();
+            await SaveChanges();
         }
 
-        public void DeletePublisher(int id)
+        public async Task DeletePublisher(int id)
         {
             if (!_context.Publishers.Any(pub => pub.Id == id))
                 return;
@@ -41,17 +40,40 @@ namespace GameStoreAPI.Models
             var _publisher = _context.Publishers.First(pub => pub.Id == id);
             _publisher.IsDeleted = true;
             _context.Publishers.Update(_publisher);
-            SaveChanges();
+            await SaveChanges();
         }
 
-        public IEnumerable<Publisher> GetPublishers()
+        public async Task<IQueryable<Publisher>> GetPublishers()
         {
-            return _context.Publishers.Where(pub => pub.IsDeleted == false);
+            return _context.Publishers;
         }
 
-        public bool SaveChanges()
+        public async Task<bool> SaveChanges()
         {
-            return _context.SaveChanges() >= 0;
+            return await _context.SaveChangesAsync() >= 0;
+        }
+
+        public async Task<Publisher> GetPublisher(int id)
+        {
+            if (_context.Publishers.Any(pub => pub.Id == id))
+                return _context.Publishers.FirstOrDefault(pub => pub.Id == id);
+            return null;
+        }
+
+        public async Task UpdatePublisher(Publisher publisher)
+        {
+            if (!_context.Publishers.Any(p => p.Id == publisher.Id))
+            {
+                return;
+            }
+
+            var _publisher = _context.Publishers.FirstOrDefault(p => p.Id == publisher.Id);
+
+            _publisher.Name = string.IsNullOrEmpty(publisher.Name) ? _publisher.Name : publisher.Name;
+            _publisher.IsDeleted = publisher.IsDeleted;
+
+            _context.Publishers.Update(_publisher);
+            await SaveChanges();
         }
     }
 }

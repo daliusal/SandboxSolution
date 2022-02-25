@@ -1,14 +1,9 @@
 ﻿using GameStoreAPI.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OData.Deltas;
-using Microsoft.AspNetCore.OData.Formatter;
 using Microsoft.AspNetCore.OData.Query;
-using Microsoft.AspNetCore.OData.Results;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
-using Microsoft.EntityFrameworkCore;
 using GameStoreAPI.Dtos;
-using Microsoft.AspNet.OData.Routing;
 
 namespace GameStoreAPI.Controllers
 {
@@ -25,7 +20,7 @@ namespace GameStoreAPI.Controllers
 
         //TODO: Add CRUD operation APIs
         [EnableQuery]
-        public async Task<IEnumerable<Game>> Get()
+        public async Task<IEnumerable<Game>> Get(CancellationToken token)
         {
             //TODO: Return list of games
             //var games = _repository.GetAllGames();
@@ -34,7 +29,7 @@ namespace GameStoreAPI.Controllers
             //    Count = games.Count(),
             //    Result = _mapper.Map<IEnumerable<GameReadDto>>(games)
             //};
-            return _repository.GetAllGames();
+            return await _repository.GetAllGames(token);
         }
 
         /*[HttpGet]
@@ -50,7 +45,7 @@ namespace GameStoreAPI.Controllers
         [Route("api/[controller]/{id}")]
         public async Task<GameEditDto> GetGameById(int id)
         {
-            return _mapper.Map<GameEditDto>(_repository.GetGameById(id));
+            return _mapper.Map<GameEditDto>(await _repository.GetGameById(id));
         }
 
         [HttpPost]
@@ -62,7 +57,7 @@ namespace GameStoreAPI.Controllers
             //      and add quantity
             //TODO: If game doesn't exist create a new game
             //      and add it into DB
-            _repository.CreateGame(_mapper.Map<Game>(game));
+            await _repository.CreateGame(_mapper.Map<Game>(game));
             return Created(game);
         }
 
@@ -72,10 +67,10 @@ namespace GameStoreAPI.Controllers
         {
             //TODO: Check if game exists
             //      if so change change IsDeleted flag to true
-            var game = _repository.GetGameById(id);
+            var game = await _repository.GetGameById(id);
             if (game != null)
             {
-                _repository.DeleteGame(id);
+                await _repository.DeleteGame(id);
                 return StatusCode(StatusCodes.Status204NoContent);
             }
 
@@ -84,20 +79,20 @@ namespace GameStoreAPI.Controllers
 
         [HttpPatch]
         [Route("api/[controller]")]
-        public async Task UpdateGame(int id, GameReadDto game)
+        public async Task UpdateGame([FromBody]GameReadDto game)
         {
             //TODO: Check if game exists if so
             //      update game values
-            _repository.UpdateGame(_mapper.Map<Game>(game));
+            await _repository.UpdateGame(_mapper.Map<Game>(game));
         }
 
         [HttpPatch]
         [Route("api/[controller]/addstock")]
-        public void AddStock(int id, int quantity)
+        public async Task AddStock(int id, int quantity)
         {
             //TODO: Check if game with given id exist
             //      if so add quantity to it
-            _repository.AddStock(id, quantity);
+            await _repository.AddStock(id, quantity);
         }
     }
 }

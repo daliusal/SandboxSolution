@@ -25,16 +25,7 @@
 
 	</tbody>
 </table>
-
-<nav aria-label="Search results pages">
-  <ul class="pagination">
-    <li class="page-item"><button class="page-link" id="previous" disabled onclick="onClickPrevious()">Previous</button></li>
-    <li class="page-item"><button class="page-link" id="page-1" style="display:block" onclick="onClickPageSelection(this)">1</button></li>
-    <li class="page-item"><button class="page-link" id="page-2" style="display:block" onclick="onClickPageSelection(this)">2</button></li>
-    <li class="page-item"><button class="page-link" id="page-3" style="display:block" onclick="onClickPageSelection(this)">3</button></li>
-    <li class="page-item"><button class="page-link" id="next" disabled onclick="onClickNext()">Next</button></li>
-  </ul>
-</nav>
+<partial name="../Shared/_Pagination" />
 
 
 <script src="~/js/odataQueryBuilder.js"></script>

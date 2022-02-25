@@ -1,0 +1,14 @@
+﻿@page
+@model SandboxSolution.Pages.Admin.Publishers.NewPublisherModel
+@{
+}
+<script src="~/js/newpublisher.js"></script>
+<form id="new-publisher-form">
+	<div class="form-group">
+		<label for="publisher-name">Publisher name</label>
+		<input type="text" class="form-control col-3" id="publisher-name" placeholder="publisher name">
+	</div>
+	<br />
+	<button type="button" class="btn btn-success" onclick="onClickSubmit()">Create</button> 
+	<button type="reset" class="btn btn-danger">Reset</button>
+</form>

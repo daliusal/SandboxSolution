@@ -7,15 +7,15 @@ const oDataLogialOperators = {
     'Less than': 'lt',
     'Less than or equal': 'le'
 }
-const gameColumns = [
-    'Name', 'Description', 'Quantity', 'Price', 'IsDeleted'
+const publisherColumns = [
+    'Name', 'IsDeleted'
 ];
 
 var pageQuery = "";
 var query = "";
 
 async function onLoadDocument() {
-    let maxPages = await getData(apiBase + "odata/Game/$count?" + query);
+    let maxPages = await getData(apiBase + "odata/publisher/$count?" + query);
     setCurrentPage(1);
     setMaxPages(maxPages);
     onClickPageSelection(document.getElementById("page-1"));
@@ -23,12 +23,11 @@ async function onLoadDocument() {
 
 function loadDataIntoTable(data) {
     let tbody = document.getElementById("tbody");
-    for (let game of data) {
+    for (let publisher of data) {
         let tr = document.createElement("tr");
-        tr.id = game.Id;
+        tr.id = publisher.Id;
         let td;
-        td = "<td>" + game.Name + "</td><td>" + game.Description + "</td><td>" +
-            game.Quantity + "</td><td>€" + game.Price + "</td><td>" + game.IsDeleted + "</td><td>" +
+        td = "<td>" + publisher.Name + "</td><td>" + publisher.IsDeleted + "</td><td>" +
             '<button type="button" class="btn btn-primary" onclick="onClickEdit(this)">Edit</button> ' +
             '<button type="button" class="btn btn-danger" onclick="onClickDelete(this)">Delete</button></td>';
         tr.innerHTML = td;
@@ -64,28 +63,27 @@ async function deleteData(url) {
 }
 
 function onClickEdit(button) {
-    location.href = "/admin/games/edit?id=" + button.parentElement.parentElement.id;
+    location.href = "/admin/publishers/edit?id=" + button.parentElement.parentElement.id;
 }
 
 function onClickAddNew() {
-    location.href = "/admin/games/newgame";
+    location.href = "/admin/publishers/newpublisher";
 }
 
 function onClickDelete(button) {
     if (confirm("Are you sure you want to delete '" +
         button.parentElement.parentElement.firstChild.innerHTML + "'?")) {
-        deleteData(apiBase + "api/Game/" + button.parentElement.parentElement.id);
+        deleteData(apiBase + "api/Publisher/" + button.parentElement.parentElement.id);
     }
-
 }
 function onClickAddFilter() {
     //TODO: Get filters element
     //TODO: Build filter object
-    addFilter(oDataLogialOperators, gameColumns);
+    addFilter(oDataLogialOperators, publisherColumns);
 }
 
 function onClickAddOrderBy() {
-    addOrderBy(gameColumns);
+    addOrderBy(publisherColumns);
 }
 
 async function onClickPageSelection(page) {
@@ -108,9 +106,9 @@ async function filterData() {
         query += "&" + pageQuery;
     }
     setCurrentPage(1);
-    setMaxPages(await getData(apiBase + "odata/Game/$count?" + query));
+    setMaxPages(await getData(apiBase + "odata/Publisher/$count?" + query));
     onClickPage(document.getElementById("page-1"));
-    const json = await getData(apiBase + "odata/Game?" + query)    
+    const json = await getData(apiBase + "odata/Publisher?" + query)
     loadDataIntoTable(json.value);
 }
 

@@ -2,3 +2,27 @@
 @model SandboxSolution.Pages.Admin.Publishers.IndexModel
 @{
 }
+<partial name="../Shared/_ODataBuilder" />
+<br />
+<button class="btn btn-primary" onclick="onClickFilter()">Filter</button>
+<br />
+<br />
+<button class="btn btn-success" onclick="onClickAddNew()">Add new publisher</button>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>Publisher name</th>
+			<th>IsDeleted</th>
+			<th>Action</th>
+		</tr>	
+	</thead>
+	<tbody id="tbody">
+
+	</tbody>
+</table>
+<partial name="../Shared/_Pagination" />
+
+
+<script src="~/js/odataQueryBuilder.js"></script>
+<script src="~/js/publishers.js"></script>
