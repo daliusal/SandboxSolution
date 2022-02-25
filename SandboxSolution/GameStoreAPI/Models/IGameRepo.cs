@@ -4,13 +4,13 @@ namespace GameStoreAPI.Models
 {
     public interface IGameRepo
     {
-        bool SaveChanges();
-        IQueryable<Game> GetGames();
-        IQueryable<Game> GetAllGames();
-        Game GetGameById(int id);
-        void CreateGame(Game game);
-        void UpdateGame(Game game);
-        void DeleteGame(int id);
-        void AddStock(int id, int stock);
+        Task<bool> SaveChanges();
+        Task<IQueryable<Game>> GetGames();
+        Task<IQueryable<Game>> GetAllGames(CancellationToken token);
+        Task<Game> GetGameById(int id);
+        Task CreateGame(Game game);
+        Task UpdateGame(Game game);
+        Task DeleteGame(int id);
+        Task AddStock(int id, int stock);
     }
 }

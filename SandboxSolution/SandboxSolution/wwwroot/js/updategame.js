@@ -1,6 +1,6 @@
 ﻿const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
-const apiBase = "https://localhost:7077/api";
+const apiBase = "https://localhost:7077/";
 var game;
 
 function onClickEdit() {
@@ -8,13 +8,13 @@ function onClickEdit() {
         alert("Game name cannot be empty");
         return;
     }
-    postData(apiBase + "/Game");
+    postData(apiBase + "api/Game");
 }
 
 async function onLoadDocument() {
-    const publishersArray = await getData(apiBase + "/Publisher");
+    const publishersArray = await getData(apiBase + "odata/Publisher");
     loadPublishers(publishersArray);
-    game = await getData(apiBase + "/Game/" + urlParams.get("id"));
+    game = await getData(apiBase + "api/Game/" + urlParams.get("id"));
     loadGameData(game);
 }
 
@@ -60,10 +60,10 @@ async function postData(url) {
 
 function loadPublishers(publishers) {
     var select = document.getElementById("publisher");
-    for (let publisher of publishers) {
+    for (let publisher of publishers.value) {
         let option = document.createElement("option");
-        option.value = publisher.id;
-        option.innerHTML = publisher.name;
+        option.value = publisher.Id;
+        option.innerHTML = publisher.Name;
         select.appendChild(option);
     }
 }

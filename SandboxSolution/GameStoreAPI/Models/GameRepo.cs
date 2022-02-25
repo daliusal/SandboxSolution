@@ -12,7 +12,7 @@ namespace GameStoreAPI.Models
         {
             _context = context;
         }
-        public void AddStock(int id, int stock)
+        public async Task AddStock(int id, int stock)
         {
             if (_context.Games.Any(x => x.Id == id))
             {
@@ -20,11 +20,11 @@ namespace GameStoreAPI.Models
                 _game.Quantity = _game.Quantity + stock > 0 ? _game.Quantity + stock : 0;
                 _game.IsOutOfStock = _game.Quantity == 0;
                 _context.Games.Update(_game);
-                SaveChanges();
+                await SaveChanges();
             }
         }
 
-        public void CreateGame(Game game)
+        public async Task CreateGame(Game game)
         {
             Game _game;
             if (_context.Games.Any(g => g.Name == game.Name &&
@@ -53,10 +53,10 @@ namespace GameStoreAPI.Models
                 });
             }
 
-            SaveChanges();
+            await SaveChanges();
         }
 
-        public void DeleteGame(int id)
+        public async Task DeleteGame(int id)
         {
             var _game = _context.Games.FirstOrDefault(g => g.Id == id);
             if (_game == null)
@@ -64,16 +64,16 @@ namespace GameStoreAPI.Models
 
             _game.IsDeleted = true;
             _context.Games.Update(_game);
-            SaveChanges();
+            await SaveChanges();
         }
 
-        public IQueryable<Game> GetAllGames()
+        public async Task<IQueryable<Game>> GetAllGames(CancellationToken token)
         {
             //var filter = new FilterQueryOption() ODataQuerySettings querySettings
             return _context.Games;
         }
 
-        public Game GetGameById(int id)
+        public async Task<Game> GetGameById(int id)
         {
             if(_context.Games.Any(g => g.Id == id))
                 return _context.Games.FirstOrDefault(game => game.Id == id);
@@ -81,18 +81,18 @@ namespace GameStoreAPI.Models
             return null;
         }
 
-        public IQueryable<Game> GetGames()
+        public async Task<IQueryable<Game>> GetGames()
         {
             return _context.Games.Where(game => game.IsOutOfStock == false && game.IsDeleted == false)
                                  .OrderByDescending(game => game.CreationTime);
         }
 
-        public bool SaveChanges()
+        public async Task<bool> SaveChanges()
         {
-            return _context.SaveChanges() >= 0;
+            return await _context.SaveChangesAsync() >= 0;
         }
 
-        public void UpdateGame(Game game)
+        public async Task UpdateGame(Game game)
         {
             if (!_context.Games.Any(x => x.Id == game.Id))
             {
@@ -108,9 +108,11 @@ namespace GameStoreAPI.Models
             _game.Price = game.Price;
             _game.PublisherId = game.PublisherId;
             _game.Publisher = _context.Publishers.FirstOrDefault(x => x.Id == game.PublisherId);
+            _game.IsDeleted = game.IsDeleted;
+            _game.IsOutOfStock = game.Quantity > 0 ? false : true;
 
             _context.Games.Update(_game);
-            SaveChanges();
+            await SaveChanges();
         }
     }
 }

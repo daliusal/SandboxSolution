@@ -12,6 +12,7 @@ static IEdmModel GetEdmModel()
 {
     ODataConventionModelBuilder builder = new();
     builder.EntitySet<Game>("Game");
+    builder.EntitySet<Publisher>("Publisher");
     return builder.GetEdmModel();
 }
 
