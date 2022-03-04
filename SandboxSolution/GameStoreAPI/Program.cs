@@ -3,6 +3,8 @@ using GameStoreAPI.Models;
 using Microsoft.AspNetCore.OData;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OData.Edm;
+using Serilog;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,13 @@ static IEdmModel GetEdmModel()
     builder.EntitySet<Publisher>("Publisher");
     return builder.GetEdmModel();
 }
+
+var logger = new LoggerConfiguration()
+  .ReadFrom.Configuration(builder.Configuration)
+  .Enrich.FromLogContext()
+  .CreateLogger();
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
 
 builder.Services.AddControllers().AddOData(options => {
     options.AddRouteComponents("odata", GetEdmModel()).Select().Filter().OrderBy().SetMaxTop(null).Count();
@@ -31,6 +40,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddScoped<IGameRepo, GameRepo>();
 builder.Services.AddScoped<IPublisherRepo, PublisherRepo>();
+
 builder.Services.AddDbContext<GameStoreDBContext>(options => 
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 

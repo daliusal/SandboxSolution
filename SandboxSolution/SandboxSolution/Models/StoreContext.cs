@@ -10,6 +10,7 @@ namespace SandboxSolution.Models
         //TODO: Add DbSets
         public DbSet<Game>? Games { get; set; }
         public DbSet<Publisher>? Publishers { get; set; }
+        public DbSet<User> Users { get; set; }
         
         public StoreContext(DbContextOptions<StoreContext> options) : base(options)
         {
@@ -48,5 +49,16 @@ namespace SandboxSolution.Models
         public string? Name { get; set; }
         public bool IsDeleted { get; set; }
         public ICollection<Game>? Games { get; set; }
+    }
+
+    public class User
+    {
+        [Key]
+        public Guid Id { get; set; } = Guid.NewGuid();
+        public string Username { get; set; }
+        public string Email { get; set; }
+        public byte[] PasswordHash { get; set; }
+        public byte[] PasswordSalt { get; set; }
+        public string Role { get; set; } = "Customer";
     }
 }
